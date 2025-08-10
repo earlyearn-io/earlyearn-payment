@@ -1,0 +1,7 @@
+.env
+/node_modules
+error.log
+combined.log
+*.code-workspace
+logs/*
+fs/*
