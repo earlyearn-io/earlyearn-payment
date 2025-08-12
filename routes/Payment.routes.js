@@ -6,4 +6,8 @@ const router = express.Router();
 router.post("/intent", handleCreatePaymentIntent);
 router.post("/get-prices", handleGetPrices);
 
+router.get("/health", (req, res) => {
+    res.status(200).json({ success: true });
+});
+
 module.exports = router;
