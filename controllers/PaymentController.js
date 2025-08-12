@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const axios = require("axios");
 const logger = require("../util/log.js");
 const { encryptSecret, decryptSecret, getIpAddress } = require("../util/util.js");
+const { fetchPrices } = require('../util/coingecko.js');
 
 const apiUrl = process.env.API_URL;
 const cookiesDomain = process.env.COOKIES_DOMAIN;
@@ -86,20 +87,26 @@ const handleCreatePaymentIntent = async (req, res) => {
     }
 };
 
-const handleGetPaymentMetaData = async (req, res) => {
-    const ip = getIpAddress(req);
-    const userAgent = req.headers['user-agent'];
+let cachedPrices = null;
+const CACHE_TTL = 60000;
 
-    const metaData = JSON.stringify({ ip, userAgent });
+const handleGetPrices = async (req, res) => {
+    const now = Date.now();
+  
+    if (!cachedPrices || now - cachedPrices.timestamp > CACHE_TTL) {
+        try {
+            cachedPrices = await fetchPrices();
+        } catch (error) {
+            logger.error(error);
+            console.error(error);
+            return res.status(500).json({ success: false, message: 'Failed to fetch price' });
+        }
+    }
 
-    const encrypted = encryptSecret(metaData);
-
-    const base64 = Buffer.from(JSON.stringify(encrypted)).toString('base64');
-
-    res.status(200).json({ success: true, data: base64 });
+    res.status(200).json({ success: true, data: cachedPrices });
 };
 
 module.exports = {
     handleCreatePaymentIntent,
-    handleGetPaymentMetaData,
+    handleGetPrices,
 };
