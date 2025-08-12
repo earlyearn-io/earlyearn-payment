@@ -57,6 +57,7 @@ const handleCreatePaymentIntent = async (req, res) => {
         const ipAddress = getIpAddress(req);
         const userAgent = req.headers['user-agent'];
 
+        console.log(`${apiUrl}/api/payment/intent`);
         const response = await axios.post(
             `${apiUrl}/api/payment/intent`,
             {
@@ -75,6 +76,8 @@ const handleCreatePaymentIntent = async (req, res) => {
                 }
             }
         );
+
+        console.log("Got response", response);        
 
         if (response.data?.success) {
             res.status(201).json({ success: true, data: response.data.data });
@@ -97,8 +100,7 @@ const handleGetPrices = async (req, res) => {
         try {
             cachedPrices = await fetchPrices();
         } catch (error) {
-            logger.error(error);
-            console.error(error);
+            logger.error(error);            
             return res.status(500).json({ success: false, message: 'Failed to fetch price' });
         }
     }
