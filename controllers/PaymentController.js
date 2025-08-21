@@ -48,7 +48,7 @@ const getOrCreateEncryptedWebUserId = (req, res) => {
 };
 
 const handleCreatePaymentIntent = async (req, res) => {
-    const { paymentMode, presaleId, network, amount, signature } = req.body;
+    const { paymentMode, presaleId, network, amount, address, signature } = req.body;
 
     try {
 
@@ -66,6 +66,7 @@ const handleCreatePaymentIntent = async (req, res) => {
                 presaleId,
                 network,
                 amount,
+                address,
                 signature,
                 linkCode,                
             },
