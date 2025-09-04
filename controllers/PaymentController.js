@@ -48,12 +48,11 @@ const getOrCreateEncryptedWebUserId = (req, res) => {
 };
 
 const handleCreatePaymentIntent = async (req, res) => {
-    const { paymentMode, presaleId, network, amount, address, signature } = req.body;
+    const { paymentMode, presaleId, network, amount, address, signature, linkCode } = req.body;
 
     try {
 
-        const webUserId = getOrCreateEncryptedWebUserId(req, res);
-        const linkCode = req.cookies?.link_code || undefined;
+        const webUserId = getOrCreateEncryptedWebUserId(req, res);        
         const ipAddress = getIpAddress(req);
         const userAgent = req.headers['user-agent'];
 
